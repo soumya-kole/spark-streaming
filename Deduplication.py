@@ -14,9 +14,12 @@
 
 # COMMAND ----------
 
-deduped_df = (spark.readStream
-                   .table("employee_bronze")
-                   .dropDuplicates(["id"]))
+deduped_df = (spark
+              .readStream
+            #   .option("startingVersion", "1")
+              .format("delta")
+              .table("employee_bronze")
+              .dropDuplicates(["id"]))
 
 # COMMAND ----------
 
@@ -32,6 +35,10 @@ def upsert_data(microBatchDF, batch):
     
     microBatchDF.sparkSession.sql(sql_query)
 
+
+# COMMAND ----------
+
+# dbutils.fs.rm("dbfs:/mnt/bronze/employee_modified", True)
 
 # COMMAND ----------
 
@@ -56,9 +63,15 @@ query.awaitTermination()
 
 # COMMAND ----------
 
-
+# MAGIC %sql
+# MAGIC select *  from employee_silver;
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC select *  from employee_silver;
+# MAGIC describe history employee_bronze
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC delete from employee_silver
