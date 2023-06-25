@@ -15,6 +15,15 @@ output_path = "/mnt/formulaonedlstorage/raw/streaming_output/"
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC drop table tst
+
+# COMMAND ----------
+
+
+
+# COMMAND ----------
+
 raw_df = (spark.readStream
     .format("cloudFiles")
     .option("cloudFiles.format", "json")
